@@ -1,0 +1,22 @@
+{
+  "name": "minimalmastodonjs",
+  "version": "1.0.0",
+  "description": "Minimal server to send a message to a mastodon user",
+  "main": "main.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Faleidel/minimalMastodonJs"
+  },
+  "keywords": [
+    "mastodon"
+  ],
+  "author": "",
+  "license": "MIT",
+  "homepage": "https://bitbucket.org/Faleidel/irontree#readme",
+  "dependencies": {
+    "request": "^2.88.0"
+  }
+}
