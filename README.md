@@ -11,6 +11,8 @@ There are 3 parts to sending a post to someone else on mastodon. First your user
 
 When you post your message to the receiving mastodon server it will send a request to your /.well-known/webfinger endpoint to get the url of the user that created the post. It will then fetch the JSON at that url to get the public key that you used to sign your request to create a new post. So we need to set up two end points and to send one request.
 
+Please note that since we generate the public / private key each time you start the server and never store it you need to change the user name each time so mastodon is not confused that you are changing your user public key all the time.
+
 ## Part 1: webfinger;
 
 A webfinger query looks like this:
@@ -57,6 +59,24 @@ Once mastodon know's your user url it will try to get it's encryption key which 
         }
     }
 
+The public key is an rsa keypaire in base64 the details of which I don't unserstand but can be generated like this:
+
+    const { generateKeyPair } = require("crypto");
+    
+    generateKeyPair('rsa', {
+        modulusLength: 2048,
+        publicKeyEncoding: {
+          type: 'pkcs1',
+          format: 'pem'
+        },
+        privateKeyEncoding: {
+          type: 'pkcs1',
+          format: 'pem',
+        }
+    }, (err, publicKey, privateKey) => {
+        console.log(publicKey, privateKey);
+    });
+
 ## Part 3: sending the request
 
 To send the message you need an activity telling mastodon that you created a message.
@@ -100,12 +120,12 @@ The signature part of the "Signature:" header is a string like this:
 
     date: Tue, 27 Nov 2018 02:48:48 GMT
 
-Signed with the private key of the public key in your user object and encoded in base64. The mastodon server will check that the signed date is within a 30s window or else it will send you an error message.
+Signed with the private key of the public key in your user object and encoded in base64. This is important since the mastodon server will check that the signed date is within a 30s window or else it will send you an error message.
 
-You can decide to sign more headers if you want. To do this you add the header to the headers list (like this: "date host server etag") and sign a string like this:
+You can decide to sign more headers if you want. To do this you add the header to the headers list (like this: "date host server etag") and sign a string like this (yes the headers must be in lower case):
 
     date: ...
     host: ...
     etag: ...
 
-The server should then send you a status code of 202 telling you it created the message.
+The server should then send you a status code of 202 telling you it created the message!
