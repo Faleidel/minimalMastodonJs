@@ -1,12 +1,10 @@
 const http = require("http");
 const urlUtils = require("url");
-
 const { generateKeyPair } = require("crypto");
 const createSign = require("crypto").createSign;
-
 const request = require("request");
 
-
+// Config for port protocol and host. Host is the host of your server.
 const port = "";
 const protocol = "https";
 const host = "irontree.tripbullet.com";
@@ -24,7 +22,6 @@ let user = {
     name: "testUser"
 };
 
-
 // Will sign a string with a private key with RSA-SHA256 algorithm. Result will the base64 encoded
 function signString(key, content) {
     let sign = createSign("RSA-SHA256");
@@ -35,7 +32,7 @@ function signString(key, content) {
 
 // Create an activity with an associated Note given a content. The user is simply hard coded
 function newActivity(content) {
-    let post = {
+    let note = {
         id: Math.random()*10000000000000000,
         type: "Note",
         content: content,
@@ -49,7 +46,7 @@ function newActivity(content) {
         to: ["https://www.w3.org/ns/activitystreams#Public"],
         actor: urlForPath("/user/" + user.name),
         published: new Date().toISOString(),
-        object: post
+        object: note
     };
     
     return act;
